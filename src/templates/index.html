@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-main">
+        <div class="messages" id="messages"></div>
+        
+        <div class="chat-input-area">
+            <textarea 
+                id="prompt" 
+                placeholder="Type your message here..."
+                rows="1"
+                data-format="markdown"
+            ></textarea>
+            <div class="input-actions">
+                <button id="send-btn" class="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

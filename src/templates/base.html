@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Gemini Flash</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+</head>
+<body class="theme-light">
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo">
+                <span>Gemini Flash Server</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Chat</a>
+                <a href="/usage" class="nav-link">Usage</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <button id="theme-toggle" class="theme-btn">🌙</button>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-content">{% block content %}{% endblock %}</main>
+    
+    <footer>
+        <div class="status-indicator">
+            <span id="status-dot"></span>
+            <span id="status-text">Checking API...</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

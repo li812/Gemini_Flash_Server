@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="settings-card">
+        <h2>API Configuration</h2>
+        <div class="setting-group">
+            <label>Default Model</label>
+            <select id="default-model">
+                <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            </select>
+        </div>
+        
+        <div class="setting-group">
+            <label>API Key</label>
+            <div class="api-key-input">
+                <input type="password" id="api-key">
+                <button id="toggle-visibility">👁️</button>
+            </div>
+            <button id="update-key">Update Key</button>
+            <div id="api-messages"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

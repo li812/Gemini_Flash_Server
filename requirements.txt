@@ -1,0 +1,17 @@
+# Core dependencies
+flask==2.3.3
+werkzeug==2.3.7
+google-generativeai==0.3.0
+cryptography==41.0.1
+
+# Flask extensions
+flask-limiter==3.5.0
+
+# Utility packages
+colorama==0.4.6
+requests==2.31.0
+
+# Testing
+pytest==7.4.3
+pytest-flask==1.3.0
+

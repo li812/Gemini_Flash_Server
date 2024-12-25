@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="usage-container">
+    <div class="statistics-card">
+        <h2>Usage Overview</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">
+                    <span id="requests-today">0</span>
+                    <small>Requests Today</small>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">
+                    <span id="rate-limit">0/60</span>
+                    <small>Rate Limit Usage</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
