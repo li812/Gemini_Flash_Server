@@ -10,6 +10,9 @@ COPY requirements.txt .
 # Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Create empty api.txt and key.txt files
+RUN touch api.txt key.txt
+
 # Copy the rest of the application code into the container
 COPY . .
 

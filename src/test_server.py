@@ -12,7 +12,7 @@ def main():
     print(f"{Fore.GREEN}Response:{Style.RESET_ALL}")
 
     try:
-        response = requests.post('http://localhost:5050/api/v1/generate', json={'prompt': prompt})
+        response = requests.post('http://localhost:5050/api/llm/generate', json={'prompt': prompt})
         response.raise_for_status()
         result = response.json().get('response', 'No response')
         print(f"{result}\n")

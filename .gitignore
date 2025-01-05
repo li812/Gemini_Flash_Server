@@ -1,2 +1,2 @@
-# Ignore API keys
+src/dl_model/*
 api.txt

@@ -99,7 +99,7 @@ async function sendMessage() {
     promptInput.value = '';
 
     try {
-        const response = await fetch('/api/v1/generate', {
+        const response = await fetch('/api/llm/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -169,7 +169,7 @@ async function updateApiKey() {
 
     try {
         updateBtn.disabled = true;
-        const response = await fetch('/api/v1/settings/api-key', {
+        const response = await fetch('/api/llm/settings/api-key', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -193,7 +193,7 @@ async function updateApiKey() {
 
 async function updateStatistics() {
     try {
-        const response = await fetch('/api/v1/statistics');
+        const response = await fetch('/api/llm/statistics');
         const data = await response.json();
         
         // Update number displays only

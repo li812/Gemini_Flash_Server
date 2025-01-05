@@ -6,6 +6,10 @@ import time
 import os
 from datetime import datetime, timedelta
 
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+
 api = Blueprint('api', __name__)
 request_times = []
 
@@ -32,7 +36,7 @@ def rate_limit(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@api.route('/v1/generate', methods=['POST'])
+@api.route('/llm/generate', methods=['POST'])
 @rate_limit
 def generate():
     try:
@@ -48,19 +52,23 @@ def generate():
         daily_requests['count'] += 1
         
         result = generate_content(data['prompt'])
+        print(f"""\n\n
+              prompt --->  {data['prompt']}\n\n
+              result --->  {result}
+              """)
         return jsonify({'response': result})
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@api.route('/v1/status', methods=['GET'])
+@api.route('/llm/status', methods=['GET'])
 def status():
     return jsonify({
         'status': 'healthy',
         'model': 'gemini-1.5-flash'
     })
 
-@api.route('/v1/settings/api-key', methods=['GET'])
+@api.route('/llm/settings/api-key', methods=['GET'])
 def get_api_key():
     try:
         with open('api.txt', 'r') as f:
@@ -68,7 +76,7 @@ def get_api_key():
     except:
         return jsonify({'error': 'Could not read API key'}), 500
 
-@api.route('/v1/settings/api-key', methods=['POST'])
+@api.route('/llm/settings/api-key', methods=['POST'])
 def update_api_key():
     try:
         data = request.get_json()
@@ -90,7 +98,7 @@ def update_api_key():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@api.route('/v1/statistics', methods=['GET'])
+@api.route('/llm/statistics', methods=['GET'])
 def get_statistics():
     current_time = datetime.now()
     current_date = current_time.date()
@@ -113,3 +121,72 @@ def get_statistics():
         'current_rate': f"{current_rate}/60",
         'hourly_requests': hourly_stats['data']
     })
+    
+    
+
+
+model = load_model('src/dl_model/cosmic_image_classification.h5')
+
+categories = ['Asteroid', 'Black Hole', 'Comet', 'Constellation', 'Nebula', 'Planet', 'Star']
+
+def preprocess_image(image_path):
+    image_data = tf.io.read_file(image_path)
+    image = tf.image.decode_jpeg(image_data, channels=3)
+    image = tf.image.resize(image, [500, 500]) / 255.0
+    return tf.expand_dims(image, axis=0) 
+
+@api.route('/image_classification/classify', methods=['POST'])
+def classify_image():
+    print("Received request to classify image")
+    
+    # Check if file was uploaded
+    if 'image' not in request.files:
+        print("No image file provided")
+        return jsonify({'error': 'No image file provided'}), 400
+        
+    file = request.files['image']
+    print(f"File uploaded: {file.filename}")
+    
+    # Validate file type
+    if not file.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+        print("Invalid file type")
+        return jsonify({'error': 'Invalid file type. Please upload PNG or JPG'}), 400
+
+    # Save uploaded file temporarily
+    temp_path = 'temp_uploads/temp_image.jpg'
+    os.makedirs('temp_uploads', exist_ok=True)
+    file.save(temp_path)
+    print(f"File saved temporarily at {temp_path}")
+
+    try:
+        # Preprocess and predict
+        processed_image = preprocess_image(temp_path)
+        print("Image preprocessed")
+        predictions = model.predict(processed_image)
+        print(f"Predictions: {predictions}")
+        
+        # Get top 3 predictions with probabilities
+        top_3_indices = np.argsort(predictions[0])[-3:][::-1]
+        results = [
+            {
+                'category': categories[i],
+                'confidence': float(predictions[0][i])
+            }
+            for i in top_3_indices
+        ]
+        print(f"Top 3 predictions: {results}")
+
+        return jsonify({
+            'success': True,
+            'predictions': results
+        })
+
+    except Exception as e:
+        print(f"Error during classification: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        # Cleanup temp file
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+            print(f"Temporary file {temp_path} removed")
